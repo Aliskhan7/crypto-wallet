@@ -1,3 +1,5 @@
+import { IAssets } from "./types.js";
+
 export const cryptoData = {
   result: [
     {
@@ -609,7 +611,7 @@ export const cryptoData = {
   },
 };
 
-export const cryptoAssets = [
+export const cryptoAssets: IAssets[] = [
   {
     id: "bitcoin",
     amount: 0.02,

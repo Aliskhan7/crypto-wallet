@@ -1,6 +1,14 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { fakeFetchCrypto, fetchAssets } from "../api";
 import { percentDifference } from "../until";
+import { IAssets, ICoin } from "../types.ts";
 
 const CryptoContext = createContext({
   assets: [],
@@ -8,9 +16,9 @@ const CryptoContext = createContext({
   loading: false,
 });
 
-export function CryptoContextProvider({ children }) {
+export const CryptoContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [crypto, setCrypto] = useState([]);
+  const [crypto, setCrypto] = useState<ICoin[]>([]);
   const [assets, setAssets] = useState([]);
 
   useEffect(() => {
@@ -20,8 +28,8 @@ export function CryptoContextProvider({ children }) {
       const assets = await fetchAssets();
 
       setAssets(
-        assets.map((asset: any) => {
-          const coin = result.find((c: any) => c.id === asset.id);
+        assets.map((asset: IAssets) => {
+          const coin = result.find((c: ICoin) => c.id === asset.id);
           return {
             grow: asset.price < coin.price,
             growPercent: percentDifference(asset.price, coin.price),
@@ -41,7 +49,7 @@ export function CryptoContextProvider({ children }) {
       {children}
     </CryptoContext.Provider>
   );
-}
+};
 export default CryptoContext;
 
 export function useCrypto() {

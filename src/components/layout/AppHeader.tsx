@@ -3,6 +3,7 @@ import { Button, Layout, Select, Space, Modal, Drawer } from "antd";
 import { useCrypto } from "../../context/crypto-context.tsx";
 import CoinInfoModal from "../CoinInfoModal.tsx";
 import AddAssetForm from "../AddAssetForm.tsx";
+import { ICoin } from "../../types.ts";
 
 const headerStyle: React.CSSProperties = {
   textAlign: "center",
@@ -16,10 +17,9 @@ const headerStyle: React.CSSProperties = {
 function AppHeader() {
   const { crypto } = useCrypto();
   const [coin, setCoin] = useState(null);
-  const [drawer, setDrawer] = useState(false);
+  const [drawer, setDrawer] = useState(true);
   const [select, setSelect] = useState(false);
   const [modal, setModal] = useState(false);
-
   useEffect(() => {
     const keypress = (event) => {
       if (event.key === "/") {
@@ -30,7 +30,7 @@ function AppHeader() {
     return () => document.removeEventListener("keypress", keypress);
   }, []);
 
-  const handlerSelect = (value) => {
+  const handlerSelect = (value: ICoin) => {
     setCoin(crypto.find((c) => c.id === value));
     setModal(true);
   };
@@ -43,7 +43,7 @@ function AppHeader() {
         onClick={() => setSelect((prev) => !prev)}
         onSelect={handlerSelect}
         value="press / to open"
-        options={crypto.map((coin) => ({
+        options={crypto.map((coin: ICoin) => ({
           label: coin.name,
           value: coin.id,
           icon: coin.icon,
@@ -66,6 +66,7 @@ function AppHeader() {
         title="Add asset"
         onClose={() => setDrawer(false)}
         open={drawer}
+        destroyOnClose
       >
         <AddAssetForm />
       </Drawer>
