@@ -3,23 +3,52 @@ import {
   Button,
   DatePicker,
   Divider,
-  Flex,
   Form,
   InputNumber,
+  Result,
   Select,
   Space,
-  Typography,
 } from "antd";
 import { useCrypto } from "../context/crypto-context.tsx";
+import { ICoin } from "../types.ts";
+import CoinInfo from "./CoinInfo.tsx";
 type FieldType = {
   amount?: number;
   price?: number;
   total?: number;
 };
 
+const validateMessages = {
+  required: "'${label}' is required!",
+  types: {
+    number: "'${label}' in not valid number",
+  },
+  number: {
+    range: "'${label} must be between '${min}' and '${max}'",
+  },
+};
+
 function AddAssetForm() {
+  const [form] = Form.useForm();
   const { crypto } = useCrypto();
-  const [coin, setCoin] = useState(null);
+  const [coin, setCoin] = useState<ICoin[] | null>(null);
+  const [submited, setSubmited] = useState(false);
+
+  if (submited) {
+    return (
+      <Result
+        status="success"
+        title="New Asset Added"
+        subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
+        extra={[
+          <Button type="primary" key="console" onClick={onClose}>
+            Go Console
+          </Button>,
+        ]}
+      />
+    );
+  }
+  console.log(coin, "coin");
   if (!coin) {
     return (
       <Select
@@ -27,7 +56,7 @@ function AddAssetForm() {
         style={{ width: "100%" }}
         onSelect={(v) => setCoin(crypto.find((c) => c.id === v))}
         placeholder="Select coin"
-        options={crypto.map((coin) => ({
+        options={crypto.map((coin: ICoin) => ({
           label: coin.name,
           value: coin.id,
           icon: coin.icon,
@@ -42,19 +71,33 @@ function AddAssetForm() {
     );
   }
 
-  const validateMessages = {
-    required: `${label} is required!'`,
-    types: {
-      number: `${label} in not valid number`,
-    },
-    number: `${label} must be between ${min} and ${max}`,
-  };
-
   function onFinish(values) {
     console.log("finish", values);
+    setSubmited(true);
+  }
+
+  function handlerAmountChange(value: number) {
+    const price = form.getFieldValue("price");
+    form.setFieldValue(
+      {
+        total: +(value * price).toFixed(2),
+      },
+      0,
+    );
+  }
+
+  function handlerPriceChange(value: number) {
+    const amount = form.getFieldValue("amount");
+    form.setFieldValue(
+      {
+        total: +(amount * value).toFixed(2),
+      },
+      0,
+    );
   }
   return (
     <Form
+      form={form}
       name="basic"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
@@ -63,12 +106,7 @@ function AddAssetForm() {
       onFinish={onFinish}
       validateMessages={validateMessages}
     >
-      <Flex align="center">
-        <img src={coin.icon} alt={coin.name} style={{ width: 40 }} />
-        <Typography.Title style={{ margin: 0, marginRight: 10 }} level={2}>
-          ({coin.symbol}) {coin.name}
-        </Typography.Title>
-      </Flex>
+      <CoinInfo coin={coin} />
       <Divider />
 
       <Form.Item<FieldType>
@@ -82,11 +120,15 @@ function AddAssetForm() {
           },
         ]}
       >
-        <InputNumber />
+        <InputNumber
+          onChange={handlerAmountChange}
+          placeholder="Enter to amount"
+          style={{ width: "100%" }}
+        />
       </Form.Item>
 
       <Form.Item<FieldType> label="Price" name="price">
-        <InputNumber />
+        <InputNumber onChange={handlerPriceChange} style={{ width: "100%" }} />
       </Form.Item>
       <Form.Item<FieldType> label="Date & Time" name="date">
         <DatePicker showTime />

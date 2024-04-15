@@ -18,7 +18,7 @@ const CryptoContext = createContext({
 
 export const CryptoContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [crypto, setCrypto] = useState<ICoin[]>([]);
+  const [crypto, setCrypto] = useState([]);
   const [assets, setAssets] = useState([]);
 
   useEffect(() => {

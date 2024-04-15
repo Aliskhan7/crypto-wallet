@@ -1,16 +1,13 @@
-import { Divider, Flex, Tag, Typography } from "antd";
+import { Divider, Tag, Typography } from "antd";
 import { ICoin } from "../types.ts";
 import React from "react";
+import CoinInfo from "./CoinInfo.tsx";
 
 const CoinInfoModal: React.FC<ICoin> = ({ coin }) => {
+  console.log("coinvcoin", coin);
   return (
     <>
-      <Flex align="center">
-        <img src={coin.icon} alt={coin.name} style={{ width: 40 }} />
-        <Typography.Title style={{ margin: 0, marginRight: 10 }} level={2}>
-          ({coin.symbol}) {coin.name}
-        </Typography.Title>
-      </Flex>
+      <CoinInfo coin={coin} withSymbol />
       <Divider />
       <Typography.Paragraph>
         <Typography.Text strong>1 hour:</Typography.Text>
