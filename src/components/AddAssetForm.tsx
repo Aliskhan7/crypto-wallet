@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Button,
   DatePicker,
@@ -10,14 +10,17 @@ import {
   Space,
 } from "antd";
 import { useCrypto } from "../context/crypto-context.tsx";
-import { ICoin } from "../types.ts";
+import { IAssets, ICoin } from "../types.ts";
 import CoinInfo from "./CoinInfo.tsx";
+
 type FieldType = {
   amount?: number;
   price?: number;
   total?: number;
 };
-
+interface IOnClose {
+  onClose: () => void;
+}
 const validateMessages = {
   required: "'${label}' is required!",
   types: {
@@ -28,18 +31,21 @@ const validateMessages = {
   },
 };
 
-function AddAssetForm() {
+function AddAssetForm({ onClose }: IOnClose) {
   const [form] = Form.useForm();
   const { crypto } = useCrypto();
-  const [coin, setCoin] = useState<ICoin[] | null>(null);
+  const [coin, setCoin] = useState<ICoin | undefined | null>(null);
   const [submited, setSubmited] = useState(false);
+  const assetRef = useRef();
+
+  console.log(assetRef);
 
   if (submited) {
     return (
       <Result
         status="success"
         title="New Asset Added"
-        subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
+        subTitle={`Added ${assetRef?.current?.amount} of ${coin?.name} by price ${assetRef?.current?.price}`}
         extra={[
           <Button type="primary" key="console" onClick={onClose}>
             Go Console
@@ -48,7 +54,6 @@ function AddAssetForm() {
       />
     );
   }
-  console.log(coin, "coin");
   if (!coin) {
     return (
       <Select
@@ -71,29 +76,44 @@ function AddAssetForm() {
     );
   }
 
-  function onFinish(values) {
-    console.log("finish", values);
+  function onFinish(values: IAssets) {
+    const newAssets = {
+      id: coin?.id,
+      amount: values?.amount,
+      price: values?.price,
+      data: values.date?.$d ?? new Date(),
+    };
+
+    assetRef.current = newAssets;
+
     setSubmited(true);
   }
-
-  function handlerAmountChange(value: number) {
-    const price = form.getFieldValue("price");
-    form.setFieldValue(
-      {
+  function handlerAmountChange(value: number | null) {
+    console.log(value);
+    if (value !== null) {
+      const price = form.getFieldValue("price");
+      form.setFieldsValue({
         total: +(value * price).toFixed(2),
-      },
-      0,
-    );
+      });
+    } else {
+      form.setFieldsValue({
+        total: 0,
+      });
+    }
   }
 
-  function handlerPriceChange(value: number) {
-    const amount = form.getFieldValue("amount");
-    form.setFieldValue(
-      {
+  function handlerPriceChange(value: number | null) {
+    console.log(value);
+    if (value !== null) {
+      const amount = form.getFieldValue("amount");
+      form.setFieldsValue({
         total: +(amount * value).toFixed(2),
-      },
-      0,
-    );
+      });
+    } else {
+      form.setFieldsValue({
+        total: 0,
+      });
+    }
   }
   return (
     <Form
@@ -102,7 +122,7 @@ function AddAssetForm() {
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       style={{ maxWidth: 600 }}
-      initialValues={{ price: +coin.price.toFixed(2) }}
+      initialValues={{ price: +coin!.price!.toFixed(2) }}
       onFinish={onFinish}
       validateMessages={validateMessages}
     >
@@ -135,7 +155,7 @@ function AddAssetForm() {
       </Form.Item>
 
       <Form.Item<FieldType> label="Total" name="total">
-        <InputNumber />
+        <InputNumber disabled style={{ width: "100%" }} />
       </Form.Item>
 
       <Form.Item>
