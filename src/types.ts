@@ -1,4 +1,5 @@
 export interface ICoin {
+  contractAddress: string;
   id?: string;
   icon?: string;
   name?: string;
@@ -17,6 +18,10 @@ export interface ICoin {
   websiteUrl?: string;
   twitterUrl?: string;
   explorers?: string[];
+}
+export interface CoinInfoProps {
+  coin: ICoin;
+  withSymbol?: boolean;
 }
 
 export interface ICrypto {

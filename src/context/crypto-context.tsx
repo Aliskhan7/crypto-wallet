@@ -10,16 +10,23 @@ import { fakeFetchCrypto, fetchAssets } from "../api";
 import { percentDifference } from "../until";
 import { IAssets, ICoin } from "../types.ts";
 
-const CryptoContext = createContext({
+interface ICryptoContext {
+  crypto: ICoin[];
+  assets: IAssets[];
+  loading: boolean;
+}
+const defaultContext: ICryptoContext = {
   assets: [],
   crypto: [],
   loading: false,
-});
+};
+
+const CryptoContext = createContext<ICryptoContext>(defaultContext);
 
 export const CryptoContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-  const [crypto, setCrypto] = useState([]);
-  const [assets, setAssets] = useState([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [crypto, setCrypto] = useState<ICoin[]>([]);
+  const [assets, setAssets] = useState<IAssets[]>([]);
 
   useEffect(() => {
     async function preload() {
