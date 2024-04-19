@@ -33,7 +33,7 @@ const validateMessages = {
 
 function AddAssetForm({ onClose }: IOnClose) {
   const [form] = Form.useForm();
-  const { crypto } = useCrypto();
+  const { crypto, addAsset } = useCrypto();
   const [coin, setCoin] = useState<ICoin | undefined | null>(null);
   const [submited, setSubmited] = useState(false);
   const assetRef = useRef();
@@ -87,6 +87,7 @@ function AddAssetForm({ onClose }: IOnClose) {
     assetRef.current = newAssets;
 
     setSubmited(true);
+    addAsset(newAssets);
   }
   function handlerAmountChange(value: number | null) {
     console.log(value);
