@@ -5,7 +5,7 @@ export interface ICoin {
   name?: string;
   symbol?: string;
   rank?: number;
-  price?: number;
+  price: number;
   priceBtc?: number;
   volume?: number;
   marketCap?: number;
@@ -29,8 +29,9 @@ export interface ICrypto {
 }
 
 export interface IAssets {
+  name?: string;
   amount: number;
-  date: Date;
+  date?: Date;
   grow?: boolean;
   growPercent?: number;
   id: string;

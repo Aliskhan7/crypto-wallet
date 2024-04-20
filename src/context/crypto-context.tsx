@@ -14,7 +14,7 @@ interface ICryptoContext {
   crypto: ICoin[];
   assets: IAssets[];
   loading: boolean;
-  addAsset?: () => void;
+  addAsset: (newAsset: IAssets) => void;
 }
 const defaultContext: ICryptoContext = {
   assets: [],
@@ -30,14 +30,16 @@ export const CryptoContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [crypto, setCrypto] = useState<ICoin[]>([]);
   const [assets, setAssets] = useState<IAssets[]>([]);
 
-  function mapAssets(asset, result) {
+  function mapAssets(asset: IAssets[], result: ICoin[]) {
+    console.log(result, "result");
     return asset.map((asset: IAssets) => {
-      const coin = result.find((c: ICoin) => c.id === asset.id);
+      const coin = result.find((c) => c.id === asset.id);
       return {
-        grow: asset.price < coin.price,
-        growPercent: percentDifference(asset.price, coin.price),
-        totalAmount: asset.amount * coin.price,
-        totalProfit: asset.amount * coin.price - asset.amount * asset.price,
+        grow: asset.price < coin!.price,
+        growPercent: percentDifference(asset.price, coin!.price),
+        totalAmount: asset.amount * coin!.price,
+        totalProfit: asset.amount * coin!.price - asset.amount * asset.price,
+        name: coin!.name,
         ...asset,
       };
     });

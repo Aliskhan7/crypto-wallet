@@ -17,7 +17,7 @@ const headerStyle: React.CSSProperties = {
 function AppHeader() {
   const { crypto } = useCrypto();
   const [coin, setCoin] = useState<ICoin | undefined | null>(null);
-  const [drawer, setDrawer] = useState(true);
+  const [drawer, setDrawer] = useState(false);
   const [select, setSelect] = useState(false);
   const [modal, setModal] = useState(false);
   useEffect(() => {
