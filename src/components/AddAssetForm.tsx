@@ -36,8 +36,7 @@ function AddAssetForm({ onClose }: IOnClose) {
   const { crypto, addAsset } = useCrypto();
   const [coin, setCoin] = useState<ICoin | undefined | null>(null);
   const [submited, setSubmited] = useState(false);
-  const assetRef = useRef();
-
+  const assetRef = useRef<IAssets | undefined>();
   console.log(assetRef);
 
   if (submited) {
