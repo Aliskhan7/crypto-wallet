@@ -30,6 +30,8 @@ function PortfolioChart() {
         marginBottom: "1rem",
         justifyContent: "center",
         height: 400,
+        width: 400,
+        margin: "auto",
       }}
     >
       <Pie data={data} />{" "}
