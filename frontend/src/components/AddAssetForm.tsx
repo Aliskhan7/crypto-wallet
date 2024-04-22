@@ -13,11 +13,7 @@ import { useCrypto } from "../context/crypto-context.tsx";
 import { IAssets, ICoin } from "../types.ts";
 import CoinInfo from "./CoinInfo.tsx";
 
-type FieldType = {
-  amount?: number;
-  price?: number;
-  total?: number;
-};
+type FieldType = "price" | "amount" | "total" | ["price"] | ["amount"] | ["total"] | "date";
 interface IOnClose {
   onClose: () => void;
 }
@@ -76,11 +72,14 @@ function AddAssetForm({ onClose }: IOnClose) {
   }
 
   function onFinish(values: IAssets) {
+    if (coin?.id === undefined) {
+      return;
+    }
     const newAssets = {
       id: coin?.id,
       amount: values?.amount,
       price: values?.price,
-      data: values.date?.$d ?? new Date(),
+      data: values.date ?? new Date(),
     };
 
     assetRef.current = newAssets;

@@ -4,29 +4,29 @@ import { useCrypto } from "../context/crypto-context.tsx";
 
 interface DataType {
   key: React.Key;
-  name: string;
-  price: number;
-  amount: number;
+  name: string | undefined;
+  price: number | undefined;
+  amount: number | undefined;
 }
 
 const columns: TableColumnsType<DataType> = [
   {
     title: "Name",
     dataIndex: "name",
-    sorter: (a, b) => a.name.length - b.name.length,
+    sorter: (a, b) => a.name!.length - b.name!.length,
     sortDirections: ["descend"],
   },
   {
     title: "Price, $",
     dataIndex: "price",
     defaultSortOrder: "descend",
-    sorter: (a, b) => a.price - b.price,
+    sorter: (a, b) => a.price! - b.price!,
   },
   {
     title: "Amount",
     dataIndex: "amount",
     defaultSortOrder: "descend",
-    sorter: (a, b) => a.amount - b.amount,
+    sorter: (a, b) => a.amount! - b.amount!,
   },
 ];
 

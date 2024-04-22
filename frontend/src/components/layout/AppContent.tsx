@@ -15,14 +15,16 @@ const contentStyle: React.CSSProperties = {
 
 function AppContent() {
   const { assets, crypto } = useCrypto();
-  const cryptoPriceMap = crypto.reduce((acc, crypto) => {
-    acc[crypto.id] = crypto.price;
+  const cryptoPriceMap = crypto.reduce<{ [key: string]: number }>((acc, crypto) => {
+    if (crypto.id !== undefined) { // Проверяем, что id не undefined
+      acc[crypto.id] = crypto.price;
+    }
     return acc;
   }, {});
   return (
     <Layout.Content style={contentStyle}>
       <Typography.Title level={3} style={{ textAlign: "left", color: "#fff" }}>
-        Portfolio:
+        Portfolio:{" "}
         {assets
           .map((asset) => asset.amount * cryptoPriceMap[asset.id])
           .reduce((acc, v) => acc + v, 0)

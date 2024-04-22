@@ -44,7 +44,6 @@ export const CryptoContextProvider: FC<PropsWithChildren> = ({ children }) => {
       };
     });
   }
-
   useEffect(() => {
     async function preload() {
       setLoading(true);
