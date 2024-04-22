@@ -16,12 +16,12 @@ const headerStyle: React.CSSProperties = {
 
 function AppHeader() {
   const { crypto } = useCrypto();
-  const [coin, setCoin] = useState(null);
-  const [drawer, setDrawer] = useState(true);
+  const [coin, setCoin] = useState<ICoin | undefined | null>(null);
+  const [drawer, setDrawer] = useState(false);
   const [select, setSelect] = useState(false);
   const [modal, setModal] = useState(false);
   useEffect(() => {
-    const keypress = (event) => {
+    const keypress = (event: { key: string }) => {
       if (event.key === "/") {
         setSelect((prev) => !prev);
       }
@@ -30,7 +30,7 @@ function AppHeader() {
     return () => document.removeEventListener("keypress", keypress);
   }, []);
 
-  const handlerSelect = (value: ICoin) => {
+  const handlerSelect = (value: string | null) => {
     setCoin(crypto.find((c) => c.id === value));
     setModal(true);
   };
@@ -59,7 +59,7 @@ function AppHeader() {
         Add asset
       </Button>
       <Modal open={modal} onCancel={() => setModal(false)} footer={null}>
-        <CoinInfoModal coin={coin} />
+        {coin && <CoinInfoModal coin={coin} />}
       </Modal>
       <Drawer
         width={600}
@@ -68,7 +68,7 @@ function AppHeader() {
         open={drawer}
         destroyOnClose
       >
-        <AddAssetForm />
+        <AddAssetForm onClose={() => setDrawer(false)} />
       </Drawer>
     </Layout.Header>
   );
