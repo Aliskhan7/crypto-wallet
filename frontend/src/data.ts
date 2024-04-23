@@ -1,3 +1,4 @@
+// https://openapi.coinstats.app/
 import { IAssets } from "./types.js";
 
 export const cryptoData = {

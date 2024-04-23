@@ -24,9 +24,6 @@ export interface CoinInfoProps {
   withSymbol?: boolean;
 }
 
-export interface ICrypto {
-  [index: number]: ICoin;
-}
 
 export interface IAssets {
   name?: string;
